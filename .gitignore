@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# zip file
+.zip
+
+# yaml File
+.yml
+
+# rsa
+id_rsa
