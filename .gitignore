@@ -130,6 +130,8 @@ dmypy.json
 
 # zip file
 .zip
+zip/
+unzip/
 
 # yaml File
 .yml
