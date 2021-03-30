@@ -55,7 +55,7 @@ class Data_by_API(object):
         request_urls= []
         for i in range(max_page):
             params_dict["pageNo"] = i + 1
-            request_urls.append(super().create_request_url(params_dict = params_dict))
+            request_urls.append(self.create_request_url(params_dict = params_dict))
             
         return request_urls
     
@@ -138,11 +138,7 @@ class Data_by_API(object):
             
         for x in dict_list:
             for col in features:
-                try: 
-                    value = x[col]
-                except:
-                    value = None
-                data_dict[col].append(value)
+                data_dict[col].append(x.get(col))
 
         return data_dict
     
