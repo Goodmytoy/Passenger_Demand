@@ -13,39 +13,19 @@ class Weather_Data_by_API(Data_by_API):
         super().__init__(url = self.base_url)
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.params_dict = params_dict
-        
-        
-        
-    def calculate_max_page(self):
-        rq = super().request()
-        
-        self.n_rows = int(self.params_dict["numOfRows"])
-        self.total_count = rq.json()["response"]["body"]["totalCount"]
-        
-        max_page = int(np.ceil(self.total_count / self.n_rows))
-        
-        print(f"n_rows : {self.n_rows}, total_count : {self.total_count}, max_page = {max_page}")
-        
-        return max_page
+        self.type = params_dict["dataType"].lower()
+    
     
     def get(self):
-        rq = super().request()
         
-        max_page = self.calculate_max_page()
-        
-        output_cols = rq.json()["response"]["body"]["items"]["item"][0].keys()
-        
+        self.request_urls = self.create_request_urls()
+
         data_dict = defaultdict(list)
-        for i in range(max_page):
-            
-            self.params_dict["pageNo"] = i + 1
-            
-            request_url = super().create_request_url(params_dict = self.params_dict)
+        for request_url in self.request_urls:
             rq = self.request(request_url = request_url)
-            json_list = rq.json()["response"]["body"]["items"]["item"]
-                                                               
-            for js in json_list:
-                for col in output_cols:
-                    data_dict[col].append(js[col])
-                    
+            text_dict = self.parse(request = rq, features = None, type = self.type)
+            
+            for k, v in text_dict.items():
+                data_dict[k].extend(v)
+            
         return pd.DataFrame(data_dict)
