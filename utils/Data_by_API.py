@@ -26,7 +26,6 @@ class Data_by_API(object):
             self.total_count = int(rq_dict["response"]["body"]["totalCount"])
         except:
             xmlsoup = BeautifulSoup(rq.text,'html.parser')
-            items = xmlsoup.find_all('item')
             self.total_count = int(xmlsoup.find("totalcount").text)
                 
         max_page = int(np.ceil(self.total_count / self.n_rows))
