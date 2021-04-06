@@ -138,3 +138,6 @@ unzip/
 
 # rsa
 id_rsa
+
+# except data file
+*.parquet
