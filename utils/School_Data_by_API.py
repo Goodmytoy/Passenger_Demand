@@ -48,5 +48,6 @@ class School_Data_by_API(Data_by_API):
             
             for k, v in temp_dict.items():
                 data_dict[k].extend(v)
-            
+        
+    
         return pd.DataFrame(data_dict)
