@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def preprocess_pm_data(pm_data, date_col = "issueDate", city = "울산"):
     """
         미세먼지 경보 데이터를 전처리 하는 함수

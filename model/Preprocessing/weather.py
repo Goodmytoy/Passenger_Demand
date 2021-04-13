@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def preprocess_weather_data(weather_data):
     """
         날씨 데이터를 전처리 하는 함수

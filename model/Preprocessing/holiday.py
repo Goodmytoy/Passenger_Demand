@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def find_seq_y(data, 
                criterion = 3):
     """
