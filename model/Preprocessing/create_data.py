@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def create_data_agg(data, 
                     date_col, 
                     stop_id_col, 
@@ -124,9 +127,16 @@ def create_all_date(data,
     # 전체 일정(시간 단위)과 정류소 별 조합 DF 생성
     all_date = pd.merge(date_df, stop_id_df, how = "cross")
     
-    # 결측일의 데이터를 채워넣은 전체 데이터를 left join
-    all_date = pd.merge(all_date, data, on = [date_col, stop_id_col], how = "left")
     
+    
+    # 결측일의 데이터를 채워넣은 전체 데이터를 left join
+    all_date = pd.merge(all_date, data.drop(["stop_nm", "longitude", "latitude"], 1), on = [date_col, stop_id_col], how = "left")
+    
+    # 정류장 정보 추가
+    bus_stop_info = data[["stop_id", "stop_nm", "longitude", "latitude"]].drop_duplicates()
+    all_date = pd.merge(all_date, bus_stop_info, on = stop_id_col, how = "inner")
+    
+    # 운행하지 않는 시간대 제외
     all_date = all_date.loc[all_date[date_col].dt.hour.isin(except_hours) == False]
     
     return all_date

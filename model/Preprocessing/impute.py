@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+
+
 def impute_recent_data(data, 
                        missing_date, 
                        date_col = "transdate"):
