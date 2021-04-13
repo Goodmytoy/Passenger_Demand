@@ -11,8 +11,8 @@ class Trading_Data_by_API(Data_by_API):
     
     def __init__(self, params_dict):
         super().__init__(url = self.base_url)
-        params_dict['cx'] = gmaps.geocode(params_dict.get('region'))[0]["geometry"]["location"]['lat']
-        params_dict['cy'] = gmaps.geocode(params_dict.get('region'))[0]["geometry"]["location"]['lng']
+        #params_dict['cx'] = gmaps.geocode(params_dict.get('region'))[0]["geometry"]["location"]['lat']
+        #params_dict['cy'] = gmaps.geocode(params_dict.get('region'))[0]["geometry"]["location"]['lng']
         self.cx = params_dict.get('cx')
         self.cy = params_dict.get('cy')
         
@@ -21,7 +21,18 @@ class Trading_Data_by_API(Data_by_API):
         self.params_dict = params_dict  
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.type = params_dict.get("type")
+        print(self.params_dict)
         
+    def to_dict(self, txt, type):
+        # json / xml to dict
+        print(txt)
+        if type == "json":
+            rq_dict = ast.literal_eval(txt)
+        elif type == "xml":
+            rq_dict = xmltodict.parse(txt)
+        print(rq_dict)
+        return rq_dict
+    
     def create_request_url(self, params_dict):
 #         params_dict["service_key"] = self.serviceKey
         params_list = [f"{k}={v}" for k, v in params_dict.items()]
