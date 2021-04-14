@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 from collections import defaultdict
 from utils.Data_by_API import *
 
-class Hospital_Data_by_API(Data_by_API):
+
+class School_Data_by_API(Data_by_API):
     
-    base_url = "http://apis.data.go.kr/B551182/hospInfoService/getHospBasisList?"
+    base_url = "http://api.data.go.kr/openapi/tn_pubr_public_elesch_mskul_lc_api?"
     
     def __init__(self, params_dict):
         """
@@ -23,7 +23,7 @@ class Hospital_Data_by_API(Data_by_API):
         super().__init__(url = self.base_url)
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.params_dict = params_dict
-        self.type = params_dict["type"].lower()
+        self.type = params_dict["type"]
   
     
     def get(self):
@@ -45,10 +45,9 @@ class Hospital_Data_by_API(Data_by_API):
             rq = self.request(request_url = request_url)
 #             temp_dict = self.parse_json(request = rq, features = None)
             temp_dict = self.parse(request = rq, features = None, type = self.type)
-            self.temp_dict = temp_dict
+            
             for k, v in temp_dict.items():
                 data_dict[k].extend(v)
-                self.data_dict = data_dict
         
-        self.data_dict = data_dict
+    
         return pd.DataFrame(data_dict)

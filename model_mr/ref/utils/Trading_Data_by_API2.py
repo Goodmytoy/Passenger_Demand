@@ -7,7 +7,7 @@ from utils.Geocoding_by_API import *
 
 class Trading_Data_by_API(Data_by_API):
     
-    base_url = "http://apis.data.go.kr/B553077/api/open/sdsc/storeOne?" # JSON , XML
+    base_url = "http://apis.data.go.kr/B553077/api/open/sdsc/storeListInRadius?" # JSON , XML
     
     def __init__(self, params_dict):
         super().__init__(url = self.base_url)
@@ -21,7 +21,7 @@ class Trading_Data_by_API(Data_by_API):
         self.params_dict = params_dict  
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.type = params_dict.get("type")
-        print(self.params_dict)
+        
         
     def to_dict(self, txt, type):
         # json / xml to dict
@@ -32,29 +32,6 @@ class Trading_Data_by_API(Data_by_API):
             rq_dict = xmltodict.parse(txt)
         print(rq_dict)
         return rq_dict
-    
-    def create_request_url(self, params_dict):
-#         params_dict["service_key"] = self.serviceKey
-        params_list = [f"{k}={v}" for k, v in params_dict.items()]
-        params_str = "&".join(params_list)
-#         print(params_str)
-        
-        self.request_url = self.url + params_str
-        print(self.request_url)
-        return self.request_url
-    
-    def create_request_urls(self):
-        max_page = self.calculate_max_page(type = self.type)
-        
-        params_dict = self.params_dict.copy()
-        
-        request_urls= []
-        for i in range(max_page):
-            params_dict["pageNo"] = i + 1
-            request_urls.append(super().create_request_url(params_dict = params_dict))
-            
-        return request_urls
-  
     
     def get(self):
         

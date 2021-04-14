@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from utils.School_Data_by_API import *
 import os
 
