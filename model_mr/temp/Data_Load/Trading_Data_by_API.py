@@ -69,7 +69,7 @@ class Trading_Data_by_API(Data_by_API):
         return pd.DataFrame(data_dict)
 
 
-    
+
 
 
 def Load_Trading_Data(params_dict,
@@ -92,4 +92,4 @@ def Load_Trading_Data(params_dict,
         trading_data.to_csv(save_path +'/trading_data.csv', index=False)
     else :
         return trading_data
-  
+
