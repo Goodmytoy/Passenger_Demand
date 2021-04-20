@@ -4,7 +4,6 @@ from collections import defaultdict
 from utils.Data_by_API import *
 
 
-
 class Weather_Data_by_API(Data_by_API):
     
     base_url = "http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList?"
