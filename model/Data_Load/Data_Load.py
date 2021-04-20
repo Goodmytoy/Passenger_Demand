@@ -82,11 +82,11 @@ class Data_API:
 
         # 축제 정보 수집
         print("축제 정보 수집 ... " , end = "")
-        self.festival_data = Load_Festival_Data(params_dict["festival"],
-                                                start_year = base_year,
-                                                select_region = city,
-                                                save_tf = save_tf,
-                                                save_path = save_path)
+        self.festival_data = Data_Load.Load_Festival_Data(params_dict["festival"],
+                                                          start_year = base_year,
+                                                          select_region = city,
+                                                          save_tf = save_tf,
+                                                          save_path = save_path)
         print("완료")
 
     

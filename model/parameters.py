@@ -2,12 +2,14 @@
 # google_key = "ReOsv=IfT43PVLSiA4vDRjs=40TCqIw97oVP2D9QpmU="
 
 service_key = 'eLWdQyzctRdtv8bEOuewsTtK6sNkoWp1bE74OUBk43jg4tU6AsI6yYt6Z%2B7sOeaqtB5pTH2yHuPRIuEHtu5amQ%3D%3D'
+career_net_key = "24b216ad9062d687e0745d2d847255bc"
 google_key = "AIzaSyDfLv3OzniRbUc7tTRBJndpiuyepHSmUrE"
 
 class parameters:
-    def __init__(self, service_key, google_key, city, base_year):
+    def __init__(self, service_key, google_key, career_net_key, city, base_year):
         self.service_key = service_key
         self.google_key = google_key
+        self.career_net_key = career_net_key
         self.city = city,
         self.base_year = base_year
     
@@ -55,7 +57,7 @@ class parameters:
                               "type" : "xml"}
 
     def _create_university_params(self):
-        self.university_params = {"apiKey" : self.service_key,
+        self.university_params = {"apiKey" : self.career_net_key,
                                   "svcType" : 'api',
                                   "svcCode" : 'SCHOOL',
                                   "gubun" : 'univ_list',
