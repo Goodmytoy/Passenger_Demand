@@ -9,43 +9,49 @@ from .Geocoding_by_API import *
 
 class Trading_Data_by_API(Data_by_API):
     
-    base_url = "http://apis.data.go.kr/B553077/api/open/sdsc/storeOne?" # JSON , XML
+    base_url = "http://apis.data.go.kr/B553077/api/open/sdsc/storeListInRadius?" # JSON , XML
     
     def __init__(self, params_dict):
         super().__init__(url = self.base_url)
-        params_dict['cx'] = gmaps.geocode(params_dict.get('region'))[0]["geometry"]["location"]['lat']
-        params_dict['cy'] = gmaps.geocode(params_dict.get('region'))[0]["geometry"]["location"]['lng']
+        temp_geocode = get_geocode(params_dict.get('select_region'), params_dict.get('google_key'))
+        params_dict['cx'], params_dict['cy'] = temp_geocode['lng'], temp_geocode['lat']
         self.cx = params_dict.get('cx')
         self.cy = params_dict.get('cy')
         
-        del params_dict['region']
+        del params_dict['select_region']
+        del params_dict['google_key']
         
         self.params_dict = params_dict  
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.type = params_dict.get("type")
         
-    def create_request_url(self, params_dict):
-#         params_dict["service_key"] = self.serviceKey
-        params_list = [f"{k}={v}" for k, v in params_dict.items()]
-        params_str = "&".join(params_list)
-#         print(params_str)
         
-        self.request_url = self.url + params_str
-        print(self.request_url)
-        return self.request_url
+    def calculate_max_page(self, type = "json"):
+        rq = self.request()
+        
+        rq_dict = self.to_dict(txt = rq.text, type = type)
+        
+        self.n_rows = int(self.params_dict["numOfRows"])
+        
+        try:
+            self.total_count = int(rq_dict["body"]["totalCount"])
+        except:
+            xmlsoup = BeautifulSoup(rq.text,'html.parser')
+            self.total_count = int(xmlsoup.find("totalcount").text)
+                
+        max_page = int(np.ceil(self.total_count / self.n_rows))
+        
+        print(f"n_rows : {self.n_rows}, total_count : {self.total_count}, max_page = {max_page}")
+        
+        return max_page
     
-    def create_request_urls(self):
-        max_page = self.calculate_max_page(type = self.type)
+    def extract_values_from_dict(self, dct):
+        try: 
+            dict_list = dct["body"]["items"]["item"]
+        except:
+            dict_list = dct["body"]["items"]
         
-        params_dict = self.params_dict.copy()
-        
-        request_urls= []
-        for i in range(max_page):
-            params_dict["pageNo"] = i + 1
-            request_urls.append(super().create_request_url(params_dict = params_dict))
-            
-        return request_urls
-  
+        return dict_list
     
     def get(self):
         
@@ -60,29 +66,20 @@ class Trading_Data_by_API(Data_by_API):
                 data_dict[k].extend(v)
             
         return pd.DataFrame(data_dict)
-    
-    
 
 
 def Load_Trading_Data(params_dict,
                       google_key,
-                      select_region = '', 
+                      select_region = '',
                       save_tf = False, 
                       save_path = os.getcwd()):
     
+    params_dict['google_key'] = google_key
+    params_dict['select_region'] = select_region
+    
     trading_api = Trading_Data_by_API(params_dict = params_dict)
     trading_data = trading_api.get()
-    
-    # 날짜데이터 형변환
-    trading_data["updateDt"] = pd.to_datetime(trading_data["updateDt"], format = "%Y-%m-%d")
-    
-    # 선택된 지역 데이터 추출
-    if select_region != '':
-        trading_data = trading_data.loc[trading_data["siteWhlAddr"].str.contains(select_region)]
-    
-    # Geocoding
-    trading_data = get_geocodeDf(trading_data, "rdnWhlAddr", google_key)
-    
+        
     # index 초기화
     trading_data = trading_data.reset_index(drop=True)
   
@@ -90,4 +87,4 @@ def Load_Trading_Data(params_dict,
     if save_tf == True :
         trading_data.to_csv(save_path +'/trading_data.csv', index=False)
     else :
-        return university_data    
+        return trading_data

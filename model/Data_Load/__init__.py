@@ -9,3 +9,4 @@ from .School_Data_by_API import *
 from .Trading_Data_by_API import *
 from .University_Data_by_API import *
 from .Weather_Data_by_API import *
+from .Data_Load import *
