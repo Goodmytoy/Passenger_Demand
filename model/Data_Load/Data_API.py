@@ -9,9 +9,9 @@ class Data_API:
         self.google_key = google_key
 
     
-    def get(self, city, base_year, params_dict, save_path = None):
+    def get(self, city, params_dict, save_path = None):
         self.save_path = save_path
-
+        year_list = range(int(params_dict["start_year"]), int(params_dict["end_year"]) + 1)
         if save_path is not None:
             save_tf = True
         else:
@@ -19,9 +19,13 @@ class Data_API:
         
         # 휴일 정보 수집
         print("휴일 정보 수집 ... " , end = "")
-        self.holiday_data = Data_Load.Load_Holiday_Data(params_dict["holiday"], 
-                                                        save_tf = save_tf, 
-                                                        save_path = save_path)
+        holiday_data_list = []
+        for yr in year_list:
+            params_dict["holiday"]["solYear"] = str(yr)
+            holiday_data_list.append(Data_Load.Load_Holiday_Data(params_dict["holiday"], 
+                                                                 save_tf = save_tf, 
+                                                                 save_path = save_path))
+        self.holiday_data = pd.concat(holiday_data_list, 0)
         print("완료")
 
         # 날씨 정보 수집
@@ -33,9 +37,13 @@ class Data_API:
 
         # 미세먼지 경보 정보 수집
         print("미세먼지 경보 정보 수집 ... " , end = "")
-        self.pm_data = Data_Load.Load_Particulate_Matter_Data(params_dict["pm"], 
-                                                                save_tf = save_tf, 
-                                                                save_path = save_path)
+        pm_data_list = []
+        for yr in year_list:
+            params_dict["pm"]["year"] = str(yr)
+            pm_data_list.append(Data_Load.Load_Particulate_Matter_Data(params_dict["pm"], 
+                                                                       save_tf = save_tf, 
+                                                                       save_path = save_path))
+        self.pm_data = pd.concat(pm_data_list, 0)
         print("완료")
 
         # 상권 정보 수집

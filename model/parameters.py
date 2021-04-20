@@ -6,23 +6,24 @@ career_net_key = "24b216ad9062d687e0745d2d847255bc"
 google_key = "AIzaSyDfLv3OzniRbUc7tTRBJndpiuyepHSmUrE"
 
 class parameters:
-    def __init__(self, service_key, google_key, career_net_key, city, base_year):
+    def __init__(self, service_key, google_key, career_net_key, city, start_year, end_year):
         self.service_key = service_key
         self.google_key = google_key
         self.career_net_key = career_net_key
         self.city = city,
-        self.base_year = base_year
+        self.start_year = start_year
+        self.end_year = end_year
     
     def _create_holiday_params(self):
         self.holiday_params = {"serviceKey" : self.service_key,
-                               "solYear" : self.base_year}
+                               "solYear" : self.start_year}
 
     def _create_weather_params(self):
         self.weather_params = {"serviceKey" : self.service_key,
                                "stnIds" : "152",
-                               "startDt" : f"{self.base_year}0101",
+                               "startDt" : f"{self.start_year}0101",
                                "startHh" : "00",
-                               "endDt" : f"{self.base_year}1231", 
+                               "endDt" : f"{self.end_year}1231", 
                                "endHh" : "23",
                                "numOfRows" : "900",
                                "dataType" : "JSON",
@@ -35,7 +36,7 @@ class parameters:
                           "returnType" : "json",
                           "numOfRows" : 1000,
                           "pageNo" : 1,
-                          "year" : self.base_year}
+                          "year" : self.start_year}
 
     def _create_trading_area_params(self):
         self.trading_area_params = {"serviceKey" : self.service_key,
@@ -96,5 +97,8 @@ class parameters:
                        "school" : self.school_params,
                        "university" : self.university_params,
                        "event" : self.event_params,
-                       "festival" : self.festival_params}
+                       "festival" : self.festival_params,
+                       "start_year" : self.start_year,
+                       "end_year" : self.end_year}
+        
         return params_dict
