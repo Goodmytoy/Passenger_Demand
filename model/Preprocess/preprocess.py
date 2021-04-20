@@ -199,7 +199,7 @@ class Preprocess_Data:
         # 3.3) 미세먼지 경보 데이터 추가
         if self.pm_data is not None:
             # pm_data = pd.read_csv("/home/seho/Passenger_Demand/data/pm_data.csv")
-            pm_data = prpr.preprocess_pm_data(pm_data = self.pm_data)
+            pm_data = prpr.preprocess_pm_data(pm_data = self.pm_data, date_col = "issueDate", city = "울산")
             self.all_date = pd.merge(self.all_date, pm_data, how = "left", on = "date")
 
         print(f"Finished ({self.all_date.shape})")
