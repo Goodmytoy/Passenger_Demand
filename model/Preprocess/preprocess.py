@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 import Preprocess as prpr
-from utils.Parallelize_DataFrame import *
+from .Parallelize_DataFrame import *
 
 
 
@@ -18,6 +18,7 @@ class Preprocess_Data:
                  trading_area_data = None,
                  hospital_data = None,
                  school_data = None,
+                 university_data = None,
                  event_data = None,
                  festival_data = None,
                  num_cores = 12):        
@@ -35,6 +36,7 @@ class Preprocess_Data:
         self.trading_area_data = trading_area_data
         self.hospital_data = hospital_data
         self.school_data = school_data
+        self.university_data = university_data
         self.event_data = event_data
         self.festival_data =festival_data
 
@@ -121,7 +123,7 @@ class Preprocess_Data:
                                                  col_nm = "daily", 
                                                  rollings = ["2d", "3d", "4d", "5d", "6d"])
                                             
-        daily_mv_agg["date"] = prpr.daily_mv_agg[self.date_col].dt.date
+        daily_mv_agg["date"] = daily_mv_agg[self.date_col].dt.date
 
         # 불필요한 컬럼 제거
         drop_cols = [self.date_col, "dayofweek", "hour", "month", "weekofyear"]
@@ -130,7 +132,7 @@ class Preprocess_Data:
         elif isinstance(self.target_cols, str):
             drop_cols.append(self.target_cols)
 
-        daily_mv_agg = prpr.daily_mv_agg.drop(drop_cols, 1)
+        daily_mv_agg = daily_mv_agg.drop(drop_cols, 1)
 
         # Feature 추가
         self.all_date = pd.merge(self.all_date, daily_mv_agg, on = [self.stop_id_col, "date"], how = "left")
@@ -142,7 +144,7 @@ class Preprocess_Data:
                                                       groupby_cols = [self.stop_id_col, "dayofweek"], 
                                                       col_nm = "daily_week", 
                                                       rollings = ["14d", "21d", "28d"])
-        daily_week_mv_agg["date"] = prpr.daily_week_mv_agg["transdate"].dt.date
+        daily_week_mv_agg["date"] = daily_week_mv_agg["transdate"].dt.date
         
         # 불필요한 컬럼 제거
         drop_cols = [self.date_col, "dayofweek", "hour", "month", "weekofyear"]
@@ -151,7 +153,7 @@ class Preprocess_Data:
         elif isinstance(self.target_cols, str):
             drop_cols.append(self.target_cols)
         
-        daily_week_mv_agg = prpr.daily_week_mv_agg.drop(drop_cols, 1)
+        daily_week_mv_agg = daily_week_mv_agg.drop(drop_cols, 1)
         
         # Feature 추가
         self.all_date = pd.merge(self.all_date, daily_week_mv_agg, on = [self.stop_id_col, "date"], how = "left")
@@ -245,13 +247,16 @@ class Preprocess_Data:
             # school_data = pd.read_csv("/home/seho/Passenger_Demand/data/school_data.csv")
             # 학교 정보 전처리
             school_data = prpr.preprocessing_school_data(school_data = self.school_data)
+            university_data = prpr.preprocessing_university_data(university_data = self.university_data)
+
+            total_schoold_data = pd.concat([school_data, university_data], 0)
 
             school_category_list = school_data["category"].drop_duplicates().to_list()
             bus_stop_info = parallelize_dataframe(df = bus_stop_info, 
                                                   func = prpr.count_nearby, 
                                                   num_cores = self.num_cores,
                                                   col_nm = "school",
-                                                  nearby_data = school_data, 
+                                                  nearby_data = total_schoold_data, 
                                                   dist = 0.2,
                                                   category_list = school_category_list)
 

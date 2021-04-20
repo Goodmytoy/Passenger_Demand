@@ -15,5 +15,8 @@ def preprocessing_hospital_data(hospital_data):
     hospital_data = hospital_data[["addr", "category", "XPos", "YPos"]]
     hospital_data = hospital_data.rename(columns = {"XPos" : "longitude",
                                                     "YPos" : "latitude"})
+
+    hospital_data["longitude"] = hospital_data["longitude"].astype(float)
+    hospital_data["latitude"] = hospital_data["latitude"].astype(float)
     
     return hospital_data

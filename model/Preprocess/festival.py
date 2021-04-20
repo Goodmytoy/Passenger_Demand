@@ -11,5 +11,8 @@ def preprocess_festival_data(festival_data, start_date, end_date):
     festival_data = festival_data.loc[festival_data["startDate"].dt.date.between(pd.to_datetime(start_date).date(), 
                                                                                  pd.to_datetime(end_date).date())].reset_index(drop = True)
     
+    festival_data["longitude"] = festival_data["longitude"].astype(float)
+    festival_data["latitude"] = festival_data["latitude"].astype(float)
+
     return festival_data
     
