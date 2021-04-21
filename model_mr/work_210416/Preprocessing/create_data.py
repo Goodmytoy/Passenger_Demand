@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 
@@ -85,7 +86,8 @@ def add_time_features(data,
     # 월
     data["month"] = data[date_col].dt.month
     # 주
-    data["weekofyear"] = data[date_col].dt.isocalendar().week
+    data["weekofyear"] = data[date_col].dt.week
+    # data["weekofyear"] = data[date_col].dt.isocalendar().week
 
     data["hour"] = data["hour"].astype(str)
     data["month"] = data["month"].astype(str)
@@ -127,10 +129,13 @@ def create_all_date(data,
     dt_list = pd.date_range(start = data[date_col].min(), end = data[date_col].max(), freq = "1h")
     date_df = pd.DataFrame({date_col : dt_list}).reset_index(drop = True)
     stop_id_df = pd.DataFrame({stop_id_col : data[stop_id_col].drop_duplicates()}).reset_index(drop = True)
-
-    # 전체 일정(시간 단위)과 정류소 별 조합 DF 생성
-    all_date = pd.merge(date_df, stop_id_df, how = "cross")
     
+    
+    # 전체 일정(시간 단위)과 정류소 별 조합 DF 생성
+    if pd.__version__ < '1.2':
+        all_date = date_df.assign(key=1).merge(stop_id_df.assign(key=1), on='key').drop('key',1)
+    else :
+        all_date = pd.merge(date_df, stop_id_df, how = "cross")
     
     
     # 결측일의 데이터를 채워넣은 전체 데이터를 left join

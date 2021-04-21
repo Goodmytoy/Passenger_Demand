@@ -1,4 +1,4 @@
-  
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 import os
@@ -66,7 +66,7 @@ class Trading_Data_by_API(Data_by_API):
                 data_dict[k].extend(v)
             
         return pd.DataFrame(data_dict)
-    
+
 def Load_Trading_Data(params_dict,
                       google_key,
                       select_region = '',

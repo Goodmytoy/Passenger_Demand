@@ -24,8 +24,8 @@ def Load_Event_Data(params_dict,
         event_data = event_data.loc[event_data["rdnmadr"].str.contains(select_region)]
         
     # 시작연도 데이터 추출
-    if start_year != '':
-        event_data = event_data.loc[(event_data["eventStartDate"].dt.year == start_year)]
+    #if start_year != '':
+    #    event_data = event_data.loc[(event_data["eventStartDate"].dt.year == int(start_year))]
     
     # index 초기화
     event_data = event_data.reset_index(drop=True)

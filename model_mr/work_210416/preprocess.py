@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 
@@ -14,6 +15,7 @@ from model.Preprocessing.particulates_matter import *
 from model.Preprocessing.trading_area import *
 from model.Preprocessing.hospital import *
 from model.Preprocessing.school import *
+from model.Preprocessing.university import *
 
 from model.Preprocessing.haversine import *
 from model.Preprocessing.event import *
@@ -36,6 +38,7 @@ class preprocess:
                  trading_area_data = None,
                  hospital_data = None,
                  school_data = None,
+                 university_data = None,
                  event_data = None,
                  festival_data = None,
                  num_cores = 12):
@@ -53,6 +56,7 @@ class preprocess:
         self.trading_area_data = trading_area_data
         self.hospital_data = hospital_data
         self.school_data = school_data
+        self.university_data = university_data
         self.event_data = event_data
         self.festival_data =festival_data
 
@@ -231,7 +235,7 @@ class preprocess:
 
         # 4.1) 상권정보 변수 추가
         if self.trading_area_data is not None:
-            # trading_area_data = pd.read_csv("/home/seho/Passenger_Demand/data/울산광역시_상권정보_201231.csv")
+            # trading_area_data = pd.read_csv("/home/seho/Passenger_Demand/data/api_data/trading_data.csv")
             # 상권 정보 전처리
             trading_area_data = preprocessing_trading_area_data(trading_area_data = self.trading_area_data)
             trading_area_category_list = trading_area_data["category"].drop_duplicates().to_list()
@@ -272,6 +276,21 @@ class preprocess:
                                                 nearby_data = school_data, 
                                                 dist = 0.2,
                                                 category_list = school_category_list)
+            
+        # 4.4) 대학교정보 변수 추가
+        if self.university_data is not None:
+            # university_data = pd.read_csv("/home/seho/Passenger_Demand/data/university_data.csv")
+            # 학교 정보 전처리
+            university_data = preprocessing_university_data(university_data = self.university_data)
+
+            university_category_list = university_data["category"].drop_duplicates().to_list()
+            bus_stop_info = parallelize_dataframe(df = bus_stop_info, 
+                                                func = count_nearby, 
+                                                num_cores = self.num_cores,
+                                                col_nm = "university",
+                                                nearby_data = university_data, 
+                                                dist = 0.2,
+                                                category_list = university_category_list)
 
 
         self.all_date = pd.merge(self.all_date, bus_stop_info.drop(["stop_nm", "latitude", "longitude"], 1), on = ["stop_id"])
