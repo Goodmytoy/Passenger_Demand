@@ -48,6 +48,7 @@ class Festival_Data_by_API(Data_by_API):
     
 def Load_Festival_Data(params_dict, 
                        start_year = '',
+                       end_year = '',
                        select_region = '', 
                        save_tf = False, 
                        save_path = os.getcwd()):
@@ -66,15 +67,13 @@ def Load_Festival_Data(params_dict,
         
     # 시작연도 데이터 추출
     if start_year != '':
-        festival_data = festival_data.loc[(festival_data["fstvlStartDate"].dt.year == int(start_year))]
+        festival_data = festival_data.loc[(festival_data["fstvlStartDate"].dt.year.between(start_year, end_year))]
     
     # index 초기화
     festival_data = festival_data.reset_index(drop=True)
   
     # 저장여부 변수가 True면 csv파일로 저장, False면 Df로 리턴
     if save_tf == True :
-        if os.path.exists(save_path) == False:
-            os.makedirs(save_path)
         festival_data.to_csv(save_path +'/festival_data.csv', index=False)
     else :
         return festival_data

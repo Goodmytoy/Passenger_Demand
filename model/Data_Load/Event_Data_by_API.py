@@ -47,6 +47,7 @@ class Event_Data_by_API(Data_by_API):
     
 def Load_Event_Data(params_dict,
                     start_year = '',
+                    end_year = '',
                     select_region = '', 
                     save_tf = False, 
                     save_path = os.getcwd()):
@@ -65,15 +66,13 @@ def Load_Event_Data(params_dict,
         
     # 시작연도 데이터 추출
     if start_year != '':
-        event_data = event_data.loc[(event_data["eventStartDate"].dt.year == int(start_year))]
+        event_data = event_data.loc[(event_data["eventStartDate"].dt.year.between(start_year, end_year))]
     
     # index 초기화
     event_data = event_data.reset_index(drop=True)
   
     # 저장여부 변수가 True면 csv파일로 저장, False면 Df로 리턴
     if save_tf == True :
-        if os.path.exists(save_path) == False:
-            os.makedirs(save_path)
         event_data.to_csv(save_path +'/event_data.csv', index=False)
     else :
         return event_data

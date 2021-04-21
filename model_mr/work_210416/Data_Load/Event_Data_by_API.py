@@ -47,7 +47,6 @@ class Event_Data_by_API(Data_by_API):
     
 def Load_Event_Data(params_dict,
                     start_year = '',
-                    end_year = '',
                     select_region = '', 
                     save_tf = False, 
                     save_path = os.getcwd()):
@@ -66,7 +65,7 @@ def Load_Event_Data(params_dict,
         
     # 시작연도 데이터 추출
     if start_year != '':
-        event_data = event_data.loc[(event_data["eventStartDate"].dt.year.between(start_year, end_year))]
+        event_data = event_data.loc[(event_data["eventStartDate"].dt.year == start_year)]
     
     # index 초기화
     event_data = event_data.reset_index(drop=True)
