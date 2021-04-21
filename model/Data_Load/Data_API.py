@@ -82,7 +82,8 @@ class Data_API:
         # 행사 정보 수집
         print("행사 정보 수집 ... " , end = "")
         self.event_data = Data_Load.Load_Event_Data(params_dict["event"],
-                                                    start_year = base_year,
+                                                    start_year = params_dict["start_year"],
+                                                    end_year = params_dict["end_year"], 
                                                     select_region = city,
                                                     save_tf = save_tf,
                                                     save_path = save_path)
@@ -91,7 +92,8 @@ class Data_API:
         # 축제 정보 수집
         print("축제 정보 수집 ... " , end = "")
         self.festival_data = Data_Load.Load_Festival_Data(params_dict["festival"],
-                                                          start_year = base_year,
+                                                          start_year = params_dict["start_year"],
+                                                          end_year = params_dict["end_year"], 
                                                           select_region = city,
                                                           save_tf = save_tf,
                                                           save_path = save_path)
@@ -112,7 +114,7 @@ class Data_API:
         # 초중고등학교 정보 Load
         self.school_data = pd.read_csv(self.save_path + "/school_data.csv")
         # 대학교 정보 Load
-        self.school_data = pd.read_csv(self.save_path + "/university_data.csv")
+        self.university_data = pd.read_csv(self.save_path + "/university_data.csv")
         # 행사 정보 Load
         self.event_data = pd.read_csv(self.save_path + "/event_data.csv")
         # 축제 정보 Load
