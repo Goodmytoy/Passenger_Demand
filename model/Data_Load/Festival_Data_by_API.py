@@ -67,7 +67,7 @@ def Load_Festival_Data(params_dict,
         
     # 시작연도 데이터 추출
     if start_year != '':
-        festival_data = festival_data.loc[(festival_data["fstvlStartDate"].dt.year.between(start_year, end_year))]
+        festival_data = festival_data.loc[(festival_data["fstvlStartDate"].dt.year.between(int(start_year), int(end_year)))]
     
     # index 초기화
     festival_data = festival_data.reset_index(drop=True)

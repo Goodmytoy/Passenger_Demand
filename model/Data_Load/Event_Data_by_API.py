@@ -66,7 +66,7 @@ def Load_Event_Data(params_dict,
         
     # 시작연도 데이터 추출
     if start_year != '':
-        event_data = event_data.loc[(event_data["eventStartDate"].dt.year.between(start_year, end_year))]
+        event_data = event_data.loc[(event_data["eventStartDate"].dt.year.between(int(start_year), int(end_year)))]
     
     # index 초기화
     event_data = event_data.reset_index(drop=True)
