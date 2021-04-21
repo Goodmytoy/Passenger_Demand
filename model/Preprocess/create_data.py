@@ -129,8 +129,10 @@ def create_all_date(data,
     stop_id_df = pd.DataFrame({stop_id_col : data[stop_id_col].drop_duplicates()}).reset_index(drop = True)
 
     # 전체 일정(시간 단위)과 정류소 별 조합 DF 생성
-    all_date = pd.merge(date_df, stop_id_df, how = "cross")
-    
+    if pd.__version__ < '1.2':
+        all_date = date_df.assign(key=1).merge(stop_id_df.assign(key=1), on='key').drop('key',1)
+    else :
+        all_date = pd.merge(date_df, stop_id_df, how = "cross")  
     
     
     # 결측일의 데이터를 채워넣은 전체 데이터를 left join
