@@ -85,7 +85,7 @@ def add_time_features(data,
     # 월
     data["month"] = data[date_col].dt.month
     # 주
-    data["weekofyear"] = data[date_col].dt.isocalendar().week
+    data["weekofyear"] = data[date_col].dt.weekofyear()
 
     data["hour"] = data["hour"].astype(str)
     data["month"] = data["month"].astype(str)
