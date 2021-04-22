@@ -47,7 +47,7 @@ class Data_API:
         # 상권 정보 수집
         print("상권 정보 수집 ... " , end = "")
         self.trading_area_data = Data_Load.Load_Trading_Data(params_dict["trading_area"],
-                                                             google_key = self.google_key,
+                                                             google_key = params_dict["google_key"],
                                                              select_region = city,
                                                              save_tf = save_tf, 
                                                              save_path = save_path)
@@ -71,7 +71,7 @@ class Data_API:
         # 대학교 정보 수집
         print("대학교 정보 수집 ... " , end = "")
         self.university_data = Data_Load.Load_University_Data(params_dict["university"],
-                                                              google_key = self.google_key,
+                                                              google_key = params_dict["google_key"],
                                                               select_region = city,
                                                               save_tf = save_tf, 
                                                               save_path = save_path)

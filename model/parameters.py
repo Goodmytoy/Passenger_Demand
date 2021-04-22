@@ -99,6 +99,9 @@ class parameters:
                        "event" : self.event_params,
                        "festival" : self.festival_params,
                        "start_year" : self.start_year,
-                       "end_year" : self.end_year}
+                       "end_year" : self.end_year,
+                       "service_key" : self.service_key,
+                       "google_key" : self.google_key,
+                       "career_net_key" : self.career_net_key}
         
         return params_dict
