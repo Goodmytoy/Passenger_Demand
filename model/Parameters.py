@@ -5,7 +5,7 @@ service_key = 'eLWdQyzctRdtv8bEOuewsTtK6sNkoWp1bE74OUBk43jg4tU6AsI6yYt6Z%2B7sOea
 career_net_key = "24b216ad9062d687e0745d2d847255bc"
 google_key = "AIzaSyDfLv3OzniRbUc7tTRBJndpiuyepHSmUrE"
 
-class parameters:
+class Parameters:
     def __init__(self, service_key, google_key, career_net_key, city, start_year, end_year):
         self.service_key = service_key
         self.google_key = google_key
