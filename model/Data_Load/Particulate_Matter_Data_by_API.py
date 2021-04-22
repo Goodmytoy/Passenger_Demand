@@ -62,6 +62,8 @@ def Load_Particulate_Matter_Data(params_dict,
   
     # 저장여부 변수가 True면 csv파일로 저장, False면 Df로 리턴
     if save_tf == True :
+        if os.path.exists(save_path) == False:
+            os.makedirs(save_path)
         pm_data.to_csv(save_path +'/pm_data.csv', index=False)
     else :
         return pm_data

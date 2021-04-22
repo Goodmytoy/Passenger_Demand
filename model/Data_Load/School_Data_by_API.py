@@ -72,6 +72,8 @@ def Load_School_Data(params_dict,
   
     # 저장여부 변수가 True면 csv파일로 저장, False면 Df로 리턴
     if save_tf == True :
+        if os.path.exists(save_path) == False:
+            os.makedirs(save_path)
         school_data.to_csv(save_path +'/school_data.csv', index=False)
     else :
         return school_data

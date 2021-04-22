@@ -1,8 +1,9 @@
 import googlemaps
 
-gmaps = googlemaps.Client(key='AIzaSyDfLv3OzniRbUc7tTRBJndpiuyepHSmUrE')
 
-def get_geocode(x):
+def get_geocode(x, google_key):
+    gmaps = googlemaps.Client(key= google_key)
+    
     try:
         result = gmaps.geocode(x)[0]["geometry"]["location"]
         
@@ -11,9 +12,9 @@ def get_geocode(x):
     
     return result
 
-def get_geocodeDf(df, col):
+def get_geocodeDf(df, col, google_key):
     tempDf = df.copy()
-    tempDf["lat_lng"] = tempDf[col].apply(lambda x: get_geocode(x))
+    tempDf["lat_lng"] = tempDf[col].apply(lambda x: get_geocode(x, google_key))
     
     tempDf = tempDf[tempDf['lat_lng'].notnull()].copy()
     tempDf["latitude"] = tempDf["lat_lng"].apply(lambda x: x["lat"])
