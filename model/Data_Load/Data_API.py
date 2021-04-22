@@ -4,10 +4,8 @@ import numpy as np
 
 
 class Data_API:
-    def __init__(self, service_key, google_key):
-        self.service_key = service_key
-        self.google_key = google_key
-
+    def __init__(self):
+        pass
     
     def get(self, city, params_dict, save_path = None):
         self.save_path = save_path
