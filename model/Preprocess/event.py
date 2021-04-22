@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 
 def preprocess_event_data(event_data, start_date, end_date):
+    event_data["eventStartDate"] = pd.to_datetime(event_data["eventStartDate"])
+    event_data["eventEndDate"] = pd.to_datetime(event_data["eventEndDate"])
     
     event_data["eventStartTime"] = (event_data["eventStartTime"].str.extract(r"(\d+):")[0]
                                                                 .str.pad(width=2, side='left', fillchar='0')
