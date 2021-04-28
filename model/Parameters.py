@@ -38,8 +38,9 @@ class Parameters:
     def _create_trading_area_params(self):
         self.trading_area_params = {"serviceKey" : self.service_key,
                                     "pageNo" : 1,
-                                    "numOfRows" : 100,
-                                    "radius" : 10000,
+                                    "numOfRows" : 1000,
+                                    "divId" : "ctprvnCd",
+                                    "key" : "31",
                                     "type" : "json"}
 
     def _create_hospital_params(self):

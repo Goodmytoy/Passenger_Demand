@@ -11,9 +11,9 @@ class Trading_Area_Data_by_API(Data_by_API):
     """
         API를 통해 상권 데이터를 가져오는 Class
     """
-    base_url = "http://apis.data.go.kr/B553077/api/open/sdsc/storeListInRadius?" # JSON , XML
+    base_url = "http://apis.data.go.kr/B553077/api/open/sdsc/storeListInDong?" # JSON , XML
     
-    def __init__(self, params_dict, city, google_key):
+    def __init__(self, params_dict):
         """ls 
             Trading_Area_Data_by_API Class의 생성자
 
@@ -26,10 +26,10 @@ class Trading_Area_Data_by_API(Data_by_API):
         """
 
         super().__init__(url = self.base_url)
-        temp_geocode = get_geocode(city, google_key)
-        params_dict['cx'], params_dict['cy'] = temp_geocode['lng'], temp_geocode['lat']
-        self.cx = params_dict.get('cx')
-        self.cy = params_dict.get('cy')
+#         temp_geocode = get_geocode(city, google_key)
+#         params_dict['cx'], params_dict['cy'] = temp_geocode['lng'], temp_geocode['lat']
+#         self.cx = params_dict.get('cx')
+#         self.cy = params_dict.get('cy')
         
         self.params_dict = params_dict  
         self.request_url = super().create_request_url(params_dict = params_dict)
@@ -90,8 +90,8 @@ class Trading_Area_Data_by_API(Data_by_API):
 
 
 def Load_Trading_Area_Data(params_dict,
-                           google_key,
-                           select_region = '',
+#                            google_key,
+#                            select_region = '',
                            save_tf = False, 
                            save_path = os.getcwd()):
     """
@@ -112,7 +112,7 @@ def Load_Trading_Area_Data(params_dict,
 #     params_dict['google_key'] = google_key
 #     params_dict['select_region'] = select_region
     
-    trading_area_api = Trading_Area_Data_by_API(params_dict = params_dict, city = select_region, google_key = google_key)
+    trading_area_api = Trading_Area_Data_by_API(params_dict = params_dict)
     trading_area_data = trading_area_api.get()
         
     # index 초기화

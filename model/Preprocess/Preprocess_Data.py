@@ -252,14 +252,14 @@ class Preprocess_Data:
             school_data = prpr.preprocessing_school_data(school_data = self.school_data)
             university_data = prpr.preprocessing_university_data(university_data = self.university_data)
 
-            total_schoold_data = pd.concat([school_data, university_data], 0)
+            total_school_data = pd.concat([school_data, university_data], 0)
 
-            school_category_list = school_data["category"].drop_duplicates().to_list()
+            school_category_list = total_school_data["category"].drop_duplicates().to_list()
             bus_stop_info = parallelize_dataframe(df = bus_stop_info, 
                                                   func = prpr.count_nearby, 
                                                   num_cores = self.num_cores,
                                                   col_nm = "school",
-                                                  nearby_data = total_schoold_data, 
+                                                  nearby_data = total_school_data, 
                                                   dist = 0.2,
                                                   category_list = school_category_list)
 
