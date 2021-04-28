@@ -6,7 +6,9 @@ from .Data_by_API import *
 from .Geocoding_by_API import *
 
 class University_Data_by_API(Data_by_API):
-    
+    """
+        API를 통해 대학교 데이터를 가져오는 Class
+    """
     base_url = "http://www.career.go.kr/cnet/openapi/getOpenApi?" # JSON , XML
     
     def __init__(self, params_dict):
@@ -17,30 +19,34 @@ class University_Data_by_API(Data_by_API):
     
     
     def extract_values_from_dict(self, dct):
-        try: 
-            dict_list = dct["dataSearch"]["content"]
-        except:
-            dict_list = dct["dataSearch"]["content"]
+        """
+            Request Dictionary 로 부터 필요한 item들을 추출하는 Method (override)
+
+            Args: 
+                dct: request 결과 Dictionary (dict)
+
+            Returns: 
+                dict_list: item들의 list (list)
+
+            Exception: 
+        """
+        dict_list = dct["dataSearch"]["content"]
         
         return dict_list
-    
-    
-    def create_request_urls(self):
-        max_page = 1
-        
-        params_dict = self.params_dict.copy()
-        
-        request_urls= []
-        for i in range(max_page):
-            params_dict["thisPage"] = i + 1
-            request_urls.append(super().create_request_url(params_dict = params_dict))
-            
-        return request_urls
-  
-    
+
+
     def get(self):
-        
-        self.request_urls = self.create_request_urls()
+        """
+            데이터를 가져오는 Method
+
+            Args: 
+
+            Returns: 
+                API를 통해 가져온 DataFrame (Pandas.DataFrame)
+
+            Exception: 
+        """
+        self.request_urls = [self.create_request_url(params_dict = self.params_dict)]
         
         data_dict = defaultdict(list)
         for request_url in self.request_urls:
@@ -51,7 +57,6 @@ class University_Data_by_API(Data_by_API):
                 data_dict[k].extend(v)
             
         return pd.DataFrame(data_dict)
-    
 
     
 def Load_University_Data(params_dict,
@@ -59,7 +64,21 @@ def Load_University_Data(params_dict,
                          select_region = '', 
                          save_tf = False, 
                          save_path = os.getcwd()):
-    
+    """
+        축제 데이터를 가져오는 함수
+
+        Args: 
+            params_dict: API 요청 파라미터 (Dictionary)
+            google_key: 구글 API key (str)
+            select_region: 지역명 (str)
+            save_tf: 결과 저장 여부 (Bool)
+            save_path: 결과 저장 경로 (str)
+
+        Returns: 
+            festival_data: 축제 데이터 (Pandas.DataFrame)
+
+        Exception: 
+    """
     university_api = University_Data_by_API(params_dict = params_dict)
     university_data = university_api.get()
     

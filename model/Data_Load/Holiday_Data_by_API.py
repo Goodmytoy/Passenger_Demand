@@ -5,15 +5,25 @@ from collections import defaultdict
 from .Data_by_API import *
 
 class Holiday_Data_by_API(Data_by_API):
-    
-    holiday_url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?"
+    """
+        API를 통해 휴일 데이터를 가져오는 Class
+    """    
+    # holiday_url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?"
     restday_url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?"
     
-    def __init__(self, params_dict, type):
-        if type == "holi":
-            base_url = self.holiday_url
-        elif type == "rest":
-            base_url = self.restday_url
+    def __init__(self, params_dict):
+        """
+            생성자
+
+            Args: 
+                params_dict: API 요청 파라미터 (Dictionary)
+
+            Returns: 
+                request_urls: 조회할 Request url 들의 list (list)
+
+            Exception: 
+        """
+        base_url = self.restday_url
             
         super().__init__(url = base_url)
 #         self.year = year
@@ -22,6 +32,18 @@ class Holiday_Data_by_API(Data_by_API):
         
     
     def create_request_urls(self, params_dict):
+        """
+            특정 년도의 전체 월을 조회하는 Request URL들을 list 형태로 생성하는 Method (Override)
+            (휴일 데이터 API는 월별 조회만 가능)
+
+            Args: 
+                params_dict: API 요청 파라미터 (Dictionary)
+
+            Returns: 
+                request_urls: 조회할 Request url 들의 list (list)
+
+            Exception: 
+        """
         params_dict = params_dict.copy()
         request_urls = []
         for x in range(1, 13):
@@ -37,7 +59,18 @@ class Holiday_Data_by_API(Data_by_API):
     
     
     def get(self):
-        
+        """
+            데이터를 가져오는 Method
+
+            Args: 
+
+            Returns: 
+                API를 통해 가져온 DataFrame (Pandas.DataFrame)
+
+            Exception: 
+        """
+        # 특정 월에 대해서 조회하는 경우 (solMonth가 params_dict에 존재하는 경우)는 url 1개만 생성
+        # solMonth가 params_dict에 존재하지 않는 경우, 1월~12월까지를 조회할 수 있도록 request_urls 리스트를 생성
         if "solMonth" in self.params_dict.keys():
             self.request_urls = [self.create_request_url(params_dict = self.params_dict)]
         else:             
@@ -60,8 +93,20 @@ class Holiday_Data_by_API(Data_by_API):
 def Load_Holiday_Data(params_dict,
                       save_tf = False, 
                       save_path = os.getcwd()):
-    
-    holiday_api = Holiday_Data_by_API(params_dict = params_dict, type = "rest")
+    """
+        휴일 데이터를 가져오는 함수
+
+        Args: 
+            params_dict: API 요청 파라미터 (Dictionary
+            save_tf: 결과 저장 여부 (Bool)
+            save_path: 결과 저장 경로 (str)
+
+        Returns: 
+            festival_data: 축제 데이터 (Pandas.DataFrame)
+
+        Exception: 
+    """
+    holiday_api = Holiday_Data_by_API(params_dict = params_dict)
     holiday_data = holiday_api.get()
     
     # index 초기화

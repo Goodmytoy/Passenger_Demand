@@ -6,7 +6,7 @@ from .Holiday_Data_by_API import *
 from .Hospital_Data_by_API import *
 from .Particulate_Matter_Data_by_API import *
 from .School_Data_by_API import *
-from .Trading_Data_by_API import *
+from .Trading_Area_Data_by_API import *
 from .University_Data_by_API import *
 from .Weather_Data_by_API import *
 from .Data_API import *

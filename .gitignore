@@ -141,3 +141,4 @@ id_rsa
 
 # except data file
 *.parquet
+etc/

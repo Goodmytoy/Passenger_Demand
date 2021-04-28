@@ -7,35 +7,46 @@ from .Data_by_API import *
 
 
 class Weather_Data_by_API(Data_by_API):
-    
+    """
+        API를 통해 날씨 데이터를 가져오는 Class
+    """
+
     base_url = "http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList?"
     
     def __init__(self, params_dict):
+        """
+            Weather_Data_by_API Class의 생성자
+
+            Args: 
+                params_dict : API 요청 파라미터 (Dictionary)
+                
+            Returns:
+                
+            Exception: 
+        """
         super().__init__(url = self.base_url)
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.params_dict = params_dict
         self.type = params_dict["dataType"].lower()
     
     
-    def get(self):
-        
-        self.request_urls = self.create_request_urls()
-
-        data_dict = defaultdict(list)
-        for request_url in self.request_urls:
-            rq = self.request(request_url = request_url)
-            text_dict = self.parse(request = rq, features = None, type = self.type)
-            
-            for k, v in text_dict.items():
-                data_dict[k].extend(v)
-            
-        return pd.DataFrame(data_dict)
-    
     
 def Load_Weather_Data(params_dict,
                       save_tf = False, 
                       save_path = os.getcwd()):
-    
+    """
+        날씨 데이터를 가져오는 함수
+
+        Args: 
+            params_dict: API 요청 파라미터 (Dictionary)
+            save_tf: 결과 저장 여부 (Bool)
+            save_path: 결과 저장 경로 (str)
+
+        Returns: 
+            weather_data: 날씨 데이터 (Pandas.DataFrame)
+
+        Exception: 
+    """
     weather_api = Weather_Data_by_API(params_dict = params_dict)
     weather_data = weather_api.get()
     

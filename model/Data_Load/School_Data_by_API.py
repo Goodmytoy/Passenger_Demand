@@ -6,7 +6,9 @@ from .Data_by_API import *
 
 
 class School_Data_by_API(Data_by_API):
-    
+    """
+        API를 통해 학교(초중고) 데이터를 가져오는 Class
+    """
     base_url = "http://api.data.go.kr/openapi/tn_pubr_public_elesch_mskul_lc_api?"
     
     def __init__(self, params_dict):
@@ -14,8 +16,8 @@ class School_Data_by_API(Data_by_API):
             School_Data_by_API Class의 생성자
 
             Args: 
-                params_dict : API Request Parameters (Dictionary)
-                
+                params_dict : API 요청 파라미터 (Dictionary)
+
             Returns:
                 
             Exception: 
@@ -26,40 +28,26 @@ class School_Data_by_API(Data_by_API):
         self.params_dict = params_dict
         self.type = params_dict["type"]
   
-    
-    def get(self):
-        """
-            API로 데이터를 받아서 Pandas DataFrame 형태로 반환하는 Method
-
-            Args: 
-                
-            Returns:
-                (Pandas DataFrame)
-                
-            Exception: 
-        """
-        
-        self.request_urls = self.create_request_urls()
-        
-        data_dict = defaultdict(list)
-        for request_url in self.request_urls:
-            rq = self.request(request_url = request_url)
-#             temp_dict = self.parse_json(request = rq, features = None)
-            temp_dict = self.parse(request = rq, features = None, type = self.type)
-            
-            for k, v in temp_dict.items():
-                data_dict[k].extend(v)
-        
-    
-        return pd.DataFrame(data_dict)
-    
 
 
 def Load_School_Data(params_dict,
                      select_region = '',
                      save_tf = False, 
                      save_path = os.getcwd()):
-    
+    """
+        학교(초중고) 데이터를 가져오는 함수
+
+        Args: 
+            params_dict: API 요청 파라미터 (Dictionary)
+            select_region: 지역명 (str)
+            save_tf: 결과 저장 여부 (Bool)
+            save_path: 결과 저장 경로 (str)
+
+        Returns: 
+            school_data: 학교(초중고) 데이터 (Pandas.DataFrame)
+
+        Exception: 
+    """
     school_api = School_Data_by_API(params_dict = params_dict)
     school_data = school_api.get()
     

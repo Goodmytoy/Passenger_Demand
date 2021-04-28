@@ -6,7 +6,9 @@ from .Data_by_API import *
 
 
 class Event_Data_by_API(Data_by_API):
-    
+    """
+        API를 통해 행사 데이터를 가져오는 Class
+    """
     base_url = "http://api.data.go.kr/openapi/tn_pubr_public_pblprfr_event_info_api?" # XML
     
     def __init__(self, params_dict):
@@ -14,35 +16,7 @@ class Event_Data_by_API(Data_by_API):
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.params_dict = params_dict
         self.type = params_dict.get("type")
-    
-    def create_request_urls(self):
-        max_page = self.calculate_max_page(type = self.type)
-        
-        params_dict = self.params_dict.copy()
-        
-        request_urls= []
-        for i in range(max_page):
-            params_dict["pageNo"] = i + 1
-            request_urls.append(super().create_request_url(params_dict = params_dict))
-            
-        return request_urls
-  
-    
-    def get(self):
-        
-        self.request_urls = self.create_request_urls()
-        
-        data_dict = defaultdict(list)
-        for request_url in self.request_urls:
-            rq = self.request(request_url = request_url)
-            temp_dict = self.parse(request = rq, features = None, type = self.type)
-            
-            for k, v in temp_dict.items():
-                data_dict[k].extend(v)
-            
-        return pd.DataFrame(data_dict)
 
-    
     
     
 def Load_Event_Data(params_dict,
@@ -51,6 +25,22 @@ def Load_Event_Data(params_dict,
                     select_region = '', 
                     save_tf = False, 
                     save_path = os.getcwd()):
+    """
+        행사 데이터를 가져오는 함수
+
+        Args: 
+            params_dict: API 요청 파라미터 (Dictionary)
+            start_year: 데이터 시작 년도 (str)
+            end_year: 데이터 종료 년도 (str)
+            select_region: 지역명 (str)
+            save_tf: 결과 저장 여부 (Bool)
+            save_path: 결과 저장 경로 (str)
+
+        Returns: 
+            event_data: 행사 데이터 (Pandas.DataFrame)
+
+        Exception: 
+    """
     
     event_api = Event_Data_by_API(params_dict = params_dict)
     event_data = event_api.get()

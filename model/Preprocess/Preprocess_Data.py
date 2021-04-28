@@ -12,6 +12,7 @@ class Preprocess_Data:
                  date_col, 
                  target_cols, 
                  stop_id_col, 
+                 city = "울산",
                  holiday_data = None,
                  weather_data = None, 
                  pm_data = None,
@@ -30,6 +31,8 @@ class Preprocess_Data:
             self.target_cols = target_cols
         self.stop_id_col = stop_id_col
         self.num_cores = num_cores
+        self.city = city
+        
         self.holiday_data = holiday_data
         self.weather_data = weather_data 
         self.pm_data = pm_data
@@ -201,7 +204,7 @@ class Preprocess_Data:
         # 3.3) 미세먼지 경보 데이터 추가
         if self.pm_data is not None:
             # pm_data = pd.read_csv("/home/seho/Passenger_Demand/data/pm_data.csv")
-            pm_data = prpr.preprocess_pm_data(pm_data = self.pm_data, date_col = "issueDate", city = "울산")
+            pm_data = prpr.preprocess_pm_data(pm_data = self.pm_data, city = self.city)
             self.all_date = pd.merge(self.all_date, pm_data, how = "left", on = "date")
 
         print(f"Finished ({self.all_date.shape})")

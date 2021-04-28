@@ -6,54 +6,46 @@ from .Data_by_API import *
 
 
 class PM_Data_by_API(Data_by_API):
-    
+    """
+        API를 통해 미세먼지 경보 데이터를 가져오는 Class
+    """
+
     base_url = "http://apis.data.go.kr/B552584/UlfptcaAlarmInqireSvc/getUlfptcaAlarmInfo?"
     
     def __init__(self, params_dict):
+        """
+            PM_Data_by_API Class의 생성자
+
+            Args: 
+                params_dict : API 요청 파라미터 (Dictionary)
+                
+            Returns:
+                
+            Exception: 
+        """
         super().__init__(url = self.base_url)
         self.request_url = super().create_request_url(params_dict = params_dict)
         self.params_dict = params_dict
         self.type = params_dict["returnType"]
-        
-      
-    
-    def parse_json(self, request, features = None):
-        data_dict = defaultdict(list)
-        rq_json = request.json()
-        
-        if features is None:
-            features = rq_json["response"]["body"]["items"][0].keys()
-        
-        json_list = rq_json["response"]["body"]["items"]                                                          
-        for js in json_list:
-            for col in features:
-                data_dict[col].append(js[col])
-        
-        return data_dict
-    
-    
-    def get(self):
-        
-        self.request_urls = self.create_request_urls()
-        
-        data_dict = defaultdict(list)
-        for request_url in self.request_urls:
-            rq = self.request(request_url = request_url)
-#             temp_dict = self.parse_json(request = rq, features = None)
-            temp_dict = self.parse(request = rq, features = None, type = self.type)
-            
-            for k, v in temp_dict.items():
-                data_dict[k].extend(v)
-            
-        return pd.DataFrame(data_dict)
-    
     
     
 
 def Load_Particulate_Matter_Data(params_dict,
                                  save_tf = False, 
                                  save_path = os.getcwd()):
-    
+    """
+        미세먼지 경보 데이터를 가져오는 함수
+
+        Args: 
+            params_dict: API 요청 파라미터 (Dictionary)
+            save_tf: 결과 저장 여부 (Bool)
+            save_path: 결과 저장 경로 (str)
+
+        Returns: 
+            pm_data: 미세먼지 경보 데이터 (Pandas.DataFrame)
+
+        Exception: 
+    """
     pm_api = PM_Data_by_API(params_dict = params_dict)
     pm_data = pm_api.get()
     
