@@ -5,24 +5,24 @@ google_key = "AIzaSyDfLv3OzniRbUc7tTRBJndpiuyepHSmUrE"
 
 
 
-class Parameters:
+class Parameters(object):
     sgis_sidocd_dict = {"서울특별시" : 110000,
-                   "부산광역시" : 210000,
-                   "대구광역시" : 220000, 
-                   "인천광역시" : 230000,
-                   "광주광역시" : 240000,
-                   "대전광역시" : 250000,
-                   "울산광역시" : 260000,
-                   "세종특별자치시" : 290000,
-                   "경기도" : 310000,
-                   "강원도" : 320000,
-                   "충청북도" : 330000,
-                   "충청남도" : 340000,
-                   "전라북도" : 350000,
-                   "전라남도" : 360000,
-                   "경상북도" : 370000,
-                   "경상남도" : 380000,
-                   "제주도" : 390000}
+                        "부산광역시" : 210000,
+                        "대구광역시" : 220000, 
+                        "인천광역시" : 230000,
+                        "광주광역시" : 240000,
+                        "대전광역시" : 250000,
+                        "울산광역시" : 260000,
+                        "세종특별자치시" : 290000,
+                        "경기도" : 310000,
+                        "강원도" : 320000,
+                        "충청북도" : 330000,
+                        "충청남도" : 340000,
+                        "전라북도" : 350000,
+                        "전라남도" : 360000,
+                        "경상북도" : 370000,
+                        "경상남도" : 380000,
+                        "제주도" : 390000}
     
     ctprvnCd_dict = {"서울특별시" : "11",
                      "부산광역시" : "26",
@@ -51,8 +51,9 @@ class Parameters:
         self.start_year = start_year
         self.end_year = end_year
         
-        self.ctprvnCd = self.ctprvnCd_dict[[x for x in ctprvnCd_dict.keys() if city in x][0]]
-        self.sidocd = self.sgis_sidocd_dict[[x for x in sgis_sidocd_dict.keys() if city in x][0]]
+        self.ctprvnCd = self.ctprvnCd_dict[[x for x in self.ctprvnCd_dict.keys() if city in x][0]]
+        self.sidocd = self.sgis_sidocd_dict[[x for x in self.sgis_sidocd_dict.keys() if city in x][0]]
+#         self.stnIds = self.stnIds_dict[[x for x in self.stnIds_dict.keys() if city in x][0]]
     
     def _create_holiday_params(self):
         self.holiday_params = {"serviceKey" : self.service_key,
@@ -60,7 +61,7 @@ class Parameters:
 
     def _create_weather_params(self):
         self.weather_params = {"serviceKey" : self.service_key,
-                               "stnIds" : "152",
+                               "stnIds" : "152", # 지상 종관 관측소 Id로 변경해야함
                                "startDt" : f"{self.start_year}0101",
                                "startHh" : "00",
                                "endDt" : f"{self.end_year}1231", 
