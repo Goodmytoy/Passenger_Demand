@@ -6,6 +6,8 @@ google_key = "AIzaSyDfLv3OzniRbUc7tTRBJndpiuyepHSmUrE"
 
 
 class Parameters(object):
+    # sgis 시도 코드 (https://sgis.kostat.go.kr/developer/html/openApi/api/dataCode/SidoCode.html)
+    # -> 하위 레벨의 시군구의 경우 따로 검색하여 적용해야함
     sgis_sidocd_dict = {"서울특별시" : 110000,
                         "부산광역시" : 210000,
                         "대구광역시" : 220000, 
@@ -24,6 +26,8 @@ class Parameters(object):
                         "경상남도" : 380000,
                         "제주도" : 390000}
     
+    # 법정동 코드 (https://www.code.go.kr/stdcode/regCodeL.do)
+    # -> 하위 레벨의 시군구의 경우 따로 검색하여 적용해야함
     ctprvnCd_dict = {"서울특별시" : "11",
                      "부산광역시" : "26",
                      "대구광역시" : "27", 
@@ -43,17 +47,17 @@ class Parameters(object):
                      "제주도" : "50"}
     
     
-    def __init__(self, service_key, google_key, career_net_key, city, start_year, end_year):
+    def __init__(self, service_key, google_key, career_net_key, city, stnIds, start_year, end_year):
         self.service_key = service_key
         self.google_key = google_key
         self.career_net_key = career_net_key
         self.city = city,
         self.start_year = start_year
         self.end_year = end_year
+        self.stnIds = stnIds
         
-        self.ctprvnCd = self.ctprvnCd_dict[[x for x in self.ctprvnCd_dict.keys() if city in x][0]]
+        self.ctprvnCd = self.ctprvnCd_dict[[x for x in self.ctprvnCd_dict.keys() if city in x][0]] 
         self.sidocd = self.sgis_sidocd_dict[[x for x in self.sgis_sidocd_dict.keys() if city in x][0]]
-#         self.stnIds = self.stnIds_dict[[x for x in self.stnIds_dict.keys() if city in x][0]]
     
     def _create_holiday_params(self):
         self.holiday_params = {"serviceKey" : self.service_key,
@@ -61,7 +65,7 @@ class Parameters(object):
 
     def _create_weather_params(self):
         self.weather_params = {"serviceKey" : self.service_key,
-                               "stnIds" : "152", # 지상 종관 관측소 Id로 변경해야함
+                               "stnIds" : self.stnIds, # 지상 종관 관측소 Id로 변경해야함
                                "startDt" : f"{self.start_year}0101",
                                "startHh" : "00",
                                "endDt" : f"{self.end_year}1231", 
@@ -84,7 +88,7 @@ class Parameters(object):
                                     "pageNo" : 1,
                                     "numOfRows" : 1000,
                                     "divId" : "ctprvnCd",
-                                    "key" : self.ctprvnCd,
+                                    "key" : self.ctprvnCd, # 법정동 코드 (https://www.code.go.kr/stdcode/regCodeL.do)
                                     "type" : "json"}
 
     def _create_hospital_params(self):

@@ -77,7 +77,7 @@ class Preprocess_Data:
     def time_series_features(self):
         ######## 2. 시계열 변수 생성(Lag 변수, MV 변수) ########
         print("2. 시계열 변수 생성 : ", end = "")
-        target_cols = ["totalcnt"]
+#         target_cols = ["totalcnt"]
         lags = ["1d", "2d", "3d", "4d", "5d", "6d", "7d"]
         
         # 2.1) Lags
@@ -97,7 +97,7 @@ class Preprocess_Data:
         rename_dict = {f"{col}_bf_{lg}": f"{col}_bf_{lg}_total" for col in self.target_cols for lg in lags}
         daily_lag = daily_lag.rename(columns = rename_dict)
 
-        daily_lag["date"] = daily_lag["transdate"].dt.date
+        daily_lag["date"] = daily_lag[self.date_col].dt.date
         self.all_date = pd.merge(self.all_date, daily_lag[["date", self.stop_id_col] + list(rename_dict.values())], on = ["date", self.stop_id_col], how = "left")
 
 
@@ -214,7 +214,7 @@ class Preprocess_Data:
         ######## 4. 공간적 특성 정보 추가 (상권정보, 학교정보, 병원정보) ########
         print("4. 공간적 특성 정보 추가 (상권정보, 학교정보, 병원정보) ... ", end = "")
         # 정류장명, 정류장ID, 위도, 경도 정보
-        bus_stop_info = self.all_date[[self.stop_id_col, "stop_nm", "longitude", "latitude"]].drop_duplicates().reset_index(drop = True)
+        bus_stop_info = self.all_date[[self.stop_id_col, "longitude", "latitude"]].drop_duplicates().reset_index(drop = True)
 
         # 4.1) 상권정보 변수 추가
         if self.trading_area_data is not None:
@@ -227,7 +227,7 @@ class Preprocess_Data:
                                                   num_cores = self.num_cores, 
                                                   col_nm = "trading_area",
                                                   nearby_data = trading_area_data, 
-                                                  dist = 0.2,
+                                                  dist = 0.2, # 전체 정류장 사이의 거리의 평균 / 2 
                                                   category_list = trading_area_category_list)
 
         # 4.2) 병원벙보 변수 추가
@@ -241,7 +241,7 @@ class Preprocess_Data:
                                                   num_cores = self.num_cores, 
                                                   col_nm = "hospital",
                                                   nearby_data = hospital_data, 
-                                                  dist = 0.2,
+                                                  dist = 0.2, # 전체 정류장 사이의 거리의 평균 / 2 
                                                   category_list = hospital_category_list)
 
 
@@ -260,11 +260,11 @@ class Preprocess_Data:
                                                   num_cores = self.num_cores,
                                                   col_nm = "school",
                                                   nearby_data = total_school_data, 
-                                                  dist = 0.2,
+                                                  dist = 0.2, # 전체 정류장 사이의 거리의 평균 / 2 
                                                   category_list = school_category_list)
 
 
-        self.all_date = pd.merge(self.all_date, bus_stop_info.drop(["stop_nm", "latitude", "longitude"], 1), on = ["stop_id"])
+        self.all_date = pd.merge(self.all_date, bus_stop_info.drop(["latitude", "longitude"], 1), on = ["stop_id"])
 
         print(f"Finished ({self.all_date.shape})")
 
@@ -281,7 +281,7 @@ class Preprocess_Data:
                                                 date_col = self.date_col,
                                                 col_nm = "event",
                                                 nearby_data = event_data, 
-                                                dist = 0.2)
+                                                dist = 0.2) # 전체 정류장 사이의 거리의 평균 / 2 
 
 
         # 5.2) 
@@ -294,7 +294,7 @@ class Preprocess_Data:
                                                   date_col = self.date_col,
                                                   col_nm = "festival",
                                                   nearby_data = festival_data, 
-                                                  dist = 0.2)
+                                                  dist = 0.2) # 전체 정류장 사이의 거리의 평균 / 2 
 
         print(f"Finished ({self.all_date.shape})")
 
@@ -306,7 +306,7 @@ class Preprocess_Data:
         self.external_spatial_features()
         self.external_time_spatial_features()
 
-        self.all_date = self.all_date.set_index([self.stop_id_col, "stop_nm", self.date_col])
+        self.all_date = self.all_date.set_index([self.stop_id_col, self.date_col])
         self.all_date = self.all_date.drop(["date"], 1)
 
         return self.all_date

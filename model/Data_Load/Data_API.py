@@ -324,7 +324,7 @@ class Data_API:
         # 미세먼지 경보 정보 Load
         self.pm_data = pd.read_csv(self.save_path + "/pm_data.csv")
         # 상권 정보 load
-        self.trading_area_data = pd.read_csv(self.save_path + "/trading_data.csv")
+        self.trading_area_data = pd.read_csv(self.save_path + "/trading_area_data.csv")
         # 병원 정보 Load
         self.hospital_data = pd.read_csv(self.save_path + "/hospital_data.csv")
         # 초중고등학교 정보 Load

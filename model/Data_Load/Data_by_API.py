@@ -211,11 +211,17 @@ class Data_by_API(object):
         
         data_dict = defaultdict(list)
         for request_url in self.request_urls:
-            rq = self.request(request_url = request_url)
-            temp_dict = self.parse(request = rq, features = None, type = self.type)
-            
+            for _ in range(5):
+                try:
+                    rq = self.request(request_url = request_url)
+                    temp_dict = self.parse(request = rq, features = None, type = self.type)
+                    break
+                except:
+                    pass
+                
             for k, v in temp_dict.items():
                 data_dict[k].extend(v)
             
+            del temp_dict
         return pd.DataFrame(data_dict)
         
