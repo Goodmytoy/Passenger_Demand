@@ -217,6 +217,7 @@ class Data_by_API(object):
                     temp_dict = self.parse(request = rq, features = None, type = self.type)
                     break
                 except:
+                    temp_dict= {}
                     pass
                 
             for k, v in temp_dict.items():
