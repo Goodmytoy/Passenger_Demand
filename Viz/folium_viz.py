@@ -3,9 +3,6 @@ import numpy as np
 from datetime import datetime, date
 from collections import defaultdict
 
-import plotly.express as px
-import plotly.graph_objects as go
-
 import folium
 from folium.plugins import HeatMap
 import altair as alt
@@ -16,17 +13,15 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-import branca.colormap
-
 ## 1. Data Load ## 
 
 # Bus Data
-data = pd.read_csv("/home/seho/all-spark-notebook/Passenger_Demand/data/pred_data.csv")
+data = pd.read_csv("pred_data.csv")
 data["transdate"] = pd.to_datetime(data["transdate"])
 data["hour"] = data["transdate"].dt.hour
 
 # Bus Route Data
-bus_route = pd.read_csv("/home/seho/all-spark-notebook/Passenger_Demand/data/bus_route.csv")
+bus_route = pd.read_csv("bus_route.csv")
 
 # bus_no_dict
 unq_bus_no = np.sort(data["bus_no"].unique())
@@ -187,7 +182,7 @@ def draw_folium_map(date_value, time_value, bus_no="401", route="All"):
     hourly_data = daily_data.loc[(daily_data["transdate"].dt.hour == int(time_value))]
     
     # bus route data
-    bus_route = pd.read_csv("/home/seho/all-spark-notebook/Passenger_Demand/data/bus_route.csv")
+    bus_route = pd.read_csv("bus_route.csv")
     if route == "All":
         bus_route = bus_route.loc[(bus_route["bus_no"] == bus_no)]
     else:
@@ -243,8 +238,8 @@ def draw_folium_map(date_value, time_value, bus_no="401", route="All"):
 
     folium.LayerControl().add_to(m)
     
-    m.save("/home/seho/all-spark-notebook/Passenger_Demand/Viz/scatter.html")
-    return open("/home/seho/all-spark-notebook/Passenger_Demand/Viz/scatter.html", "r").read()
+    m.save("scatter.html")
+    return open("scatter.html", "r", encoding = "utf-8").read()
 
 
 
