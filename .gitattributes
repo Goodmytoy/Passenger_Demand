@@ -1,2 +1,0 @@
-data/mybicard.parquet filter=lfs diff=lfs merge=lfs -text
-data/출동보고현황_2020.csv filter=lfs diff=lfs merge=lfs -text
