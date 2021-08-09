@@ -29,8 +29,8 @@
 
 ---
 ### 분석 모델
-model/Data_Load : API를 통해 데이터를 수집하는 모듈  
-model/Preprocessing : 데이터 전처리 모듈  
+* model/Data_Load : API를 통해 데이터를 수집하는 모듈  
+* model/Preprocessing : 데이터 전처리 모듈  
 <br/>
 **pycaret** 라이브러리를 활용하여 모델링 부분의 코드를 최대한 단순화하고, 이를 통해 모델 개선 및 다양한 실험을 용이하게 함.
 
