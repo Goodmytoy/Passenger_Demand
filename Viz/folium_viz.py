@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, date
 from collections import defaultdict
+import pickle
 
 import folium
 from folium.plugins import HeatMap
@@ -15,8 +16,26 @@ from dash.dependencies import Input, Output
 
 ## 1. Data Load ## 
 
-# Bus Data
+## 1) main.ipynb의 결과물을 받아서 사용하는 경우
+# pred_data.csv를 직접 코드 내에서 만듦
+
+# pred = pd.read_csv("../data/predict_data.csv")["pred"].astype(int)
+
+# with open("../data/ml_data.pkl", "rb") as f:
+#     data = pickle.load(f)[["stop_nm", "totalcnt", "normalcnt", "studentcnt", "childcnt", "bus_no", "route", "latitude", "longitude"]]
+
+# data["pred"] = pred
+# data = data.reset_index()
+# data["bus_no"] = data["bus_no"].astype("int")
+
+# data.to_csv("../Viz/pred_data.csv", index = False)
+
+
+## 2) 이미 만들어진 데이터셋(pred_data.csv)을 활용하는 경우
 data = pd.read_csv("pred_data.csv")
+
+
+# 전처리
 data["transdate"] = pd.to_datetime(data["transdate"])
 data["hour"] = data["transdate"].dt.hour
 
@@ -44,7 +63,7 @@ button = dbc.Card(
                         dcc.Dropdown(
                             id = "bus_no_dropdown",
                             options = bus_no_dict,
-                            value = "401"
+                            placeholder = "Select"
                         )
                     ]
                 ),
@@ -134,7 +153,8 @@ app.layout = dbc.Container(
 
 # line plot for popup (daily trend)
 def draw_line_plot(data, date, hour, stop_id):
-    temp_data = data.loc[(data["transdate"].dt.date == date) & (data["stop_id"] == stop_id)]
+#     temp_data = data.loc[(data["transdate"].dt.date == date) & (data["stop_id"] == stop_id)]
+    temp_data = data.get_group(stop_id)
 
     chart = alt.Chart(temp_data, title=f"{temp_data['stop_nm'].unique()[0]} ({stop_id})").mark_line().encode(
         x = "hour",
@@ -145,7 +165,7 @@ def draw_line_plot(data, date, hour, stop_id):
 
     return chart + line
 
-# Callback Function
+# Bus No 선택 시, Bus Route 메뉴를 변경하는 함수
 @app.callback(
     dash.dependencies.Output("bus_route_dropdown", "options"),
     dash.dependencies.Input("bus_no_dropdown", "value")
@@ -161,6 +181,7 @@ def update_bus_route_menu(bus_no):
 
 
 
+# Folium 지도를 그리는 함수
 @app.callback(
     dash.dependencies.Output("scatter", "srcDoc"),
 
@@ -178,7 +199,8 @@ def draw_folium_map(date_value, time_value, bus_no="401", route="All"):
         daily_data = data.loc[(data["transdate"].dt.date == date_object) & (data["bus_no"] == bus_no)]
     else:
         daily_data = data.loc[(data["transdate"].dt.date == date_object) & (data["bus_no"] == bus_no) & (data["route"] == route)]
-
+    
+    # 특정 시간대의 데이터
     hourly_data = daily_data.loc[(daily_data["transdate"].dt.hour == int(time_value))]
     
     # bus route data
@@ -207,14 +229,16 @@ def draw_folium_map(date_value, time_value, bus_no="401", route="All"):
         
         folium.PolyLine(coord_list, color = ["red", "blue"][j], opacity = 0.5, tooltip = f"<b>노선</b> : {rt}").add_to(bus_line)
 
-
+    
+    groupby_data = daily_data.groupby("stop_id")
+    
     # Bus Stop
     for i, row in hourly_data.iterrows():
         popup = folium.map.Popup(f"""정류장 명 : {row['stop_nm']} <br> 탑승자 수 : {row['totalcnt']}""",
                                  max_width = "1000")
         
         # draw line chart
-        line_chart = draw_line_plot(data = daily_data, date = date_object, hour = int(time_value), stop_id=row["stop_id"])
+        line_chart = draw_line_plot(data = groupby_data, date = date_object, hour = int(time_value), stop_id = row["stop_id"])
 
 
         folium.CircleMarker(

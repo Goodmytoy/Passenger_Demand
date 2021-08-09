@@ -301,10 +301,20 @@ class Preprocess_Data:
 
     def run(self):
         self.impute()
+        if "bus_no_x" in self.all_date.columns:
+            print("impute")
         self.time_series_features()
+        if "bus_no_x" in self.all_date.columns:
+            print("time_series_features")        
         self.external_time_features()
+        if "bus_no_x" in self.all_date.columns:
+            print("external_time_features")        
         self.external_spatial_features()
+        if "bus_no_x" in self.all_date.columns:
+            print("external_spatial_features")        
         self.external_time_spatial_features()
+        if "bus_no_x" in self.all_date.columns:
+            print("external_time_spatial_features")        
 
         self.all_date = self.all_date.set_index([self.stop_id_col, self.date_col])
         self.all_date = self.all_date.drop(["date"], 1)

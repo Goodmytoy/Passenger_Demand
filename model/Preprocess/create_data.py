@@ -119,24 +119,31 @@ def create_all_date(data,
     # -> list가 아닌 경우, 이를 list(str)로 변환
     if isinstance(except_hours, list) == False:
         except_hours = [except_hours]
-        
+    
+    
+
+    # bus정보(bus_no, route) 변수 추가(mr)
+    bus_cols = ["bus_no", "route"]
+
     # 정류장별 모든 시간대의 조합을 생성해 버스 집계 데이터를 Join
     # 데이터가 존재하지 않는 시간대 : NA -> 이후 Impute
     
     # 데이터의 시작과 끝 사이를 1시간 간격으로 구분하여 list 생성
     dt_list = pd.date_range(start = data[date_col].min(), end = data[date_col].max(), freq = "1h")
     date_df = pd.DataFrame({date_col : dt_list}).reset_index(drop = True)
-    stop_id_df = pd.DataFrame({stop_id_col : data[stop_id_col].drop_duplicates()}).reset_index(drop = True)
+    #stop_id_df = pd.DataFrame({stop_id_col : data[stop_id_col].drop_duplicates()}).reset_index(drop = True)
 
+    # 조건변경(mr)
+    stop_id_df = data[[stop_id_col] + bus_cols].drop_duplicates().reset_index(drop = True)
+    
     # 전체 일정(시간 단위)과 정류소 별 조합 DF 생성
     if pd.__version__ < '1.2':
         all_date = date_df.assign(key=1).merge(stop_id_df.assign(key=1), on='key').drop('key',1)
     else :
         all_date = pd.merge(date_df, stop_id_df, how = "cross")  
     
-    
     # 결측일의 데이터를 채워넣은 전체 데이터를 left join
-    all_date = pd.merge(all_date, data.drop(["stop_nm", "longitude", "latitude"], 1), on = [date_col, stop_id_col], how = "left")
+    all_date = pd.merge(all_date, data.drop(["stop_nm", "longitude", "latitude"], 1), on = [date_col, stop_id_col] + bus_cols, how = "left")
     
     # 정류장 정보 추가
     bus_stop_info = data[["stop_id", "stop_nm", "longitude", "latitude"]].drop_duplicates()
